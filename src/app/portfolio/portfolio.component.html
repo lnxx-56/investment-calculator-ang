@@ -6,16 +6,11 @@
       <div class="input-group">
         <p>
           <label for="initial-investment">Initial Investment</label>
-          <input
-            type="number"
-            name="initialInvestment"
-            id="initial-investment"
-            [(ngModel)]="enteredInitialValue"
-          />
+          <input type="number" name="initialInvestment" id="initial-investment" [(ngModel)]="enteredInitialValue" />
         </p>
         <p>
           <label for="annual-investment">Annual Investment</label>
-          <input type="number" id="annual-investment" name="annual-investment" [(ngModel)]="enteredAnnualInvestment"/>
+          <input type="number" id="annual-investment" name="annual-investment" [(ngModel)]="enteredAnnualInvestment" />
         </p>
       </div>
       <div class="input-group">
@@ -25,7 +20,8 @@
         </p>
         <p>
           <label for="rebalancing">Rebalancing (years, 0 = none)</label>
-          <input type="number" id="rebalancing" name="rebalancing" [(ngModel)]="enteredRebalancingFrequency" min="0" max="10" />
+          <input type="number" id="rebalancing" name="rebalancing" [(ngModel)]="enteredRebalancingFrequency" min="0"
+            max="10" />
         </p>
       </div>
     </div>
@@ -33,16 +29,16 @@
     <div class="asset-allocation">
       <div class="section-header">
         <h3>Asset Allocation</h3>
-        <span class="total-allocation" [ngClass]="{'warning': totalAllocation !== 100}">
-          Total: {{totalAllocation}}% 
-          <span *ngIf="totalAllocation !== 100">(must be 100%)</span>
+        <span class="total-allocation" [ngClass]="{'warning': totalAllocation() !== 100}">
+          Total: {{totalAllocation()}}%
+          <span *ngIf="totalAllocation() !== 100">(must be 100%)</span>
         </span>
       </div>
 
       <div class="risk-meter">
-        <span>Portfolio Risk: {{portfolioRisk}}/10</span>
+        <span>Portfolio Risk: {{portfolioRisk()}}/10</span>
         <div class="risk-bar">
-          <div class="risk-indicator" [style.width.%]="portfolioRisk * 10"></div>
+          <div class="risk-indicator" [style.width.%]="portfolioRisk() * 10"></div>
         </div>
       </div>
 
@@ -51,52 +47,34 @@
           <div class="asset-header">
             <div class="asset-name">
               <input type="text" [(ngModel)]="asset.name" [name]="'asset-name-' + asset.id" />
-              <button type="button" class="lock-button" (click)="toggleLock(asset.id)" [class.locked]="isLocked(asset.id)">
+              <button type="button" class="lock-button" (click)="toggleLock(asset.id)"
+                [class.locked]="isLocked(asset.id)">
                 {{ isLocked(asset.id) ? '🔒' : '🔓' }}
               </button>
             </div>
-            <button type="button" class="remove-asset" (click)="removeAssetClass(asset.id)" *ngIf="assetClasses().length > 2">✕</button>
+            <button type="button" class="remove-asset" (click)="removeAssetClass(asset.id)"
+              *ngIf="assetClasses().length > 2">✕</button>
           </div>
 
           <div class="asset-details">
             <div class="asset-slider">
               <label>Allocation: {{asset.allocation}}%</label>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                step="1" 
-                [ngModel]="asset.allocation" 
-                (ngModelChange)="updateAllocation(asset.id, $event)" 
-                [name]="'asset-allocation-' + asset.id"
-                [disabled]="isLocked(asset.id)" 
-              />
+              <input type="range" min="0" max="100" step="1" [ngModel]="asset.allocation"
+                (ngModelChange)="updateAllocation(asset.id, $event)" [name]="'asset-allocation-' + asset.id"
+                [disabled]="isLocked(asset.id)" />
             </div>
-            
+
             <div class="asset-properties">
               <div class="asset-property">
                 <label>Expected Return: {{asset.expectedReturn}}%</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="15" 
-                  step="0.1" 
-                  [(ngModel)]="asset.expectedReturn" 
-                  [name]="'asset-return-' + asset.id" 
-                />
+                <input type="range" min="0" max="15" step="0.1" [(ngModel)]="asset.expectedReturn"
+                  [name]="'asset-return-' + asset.id" />
               </div>
-              
+
               <div class="asset-property">
                 <label>Risk Level: {{asset.risk}}/10</label>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="10" 
-                  step="0.1" 
-                  [(ngModel)]="asset.risk" 
-                  (ngModelChange)="updatePortfolioRisk()" 
-                  [name]="'asset-risk-' + asset.id" 
-                />
+                <input type="range" min="1" max="10" step="0.1" [(ngModel)]="asset.risk"
+                  (ngModelChange)="updatePortfolioRisk()" [name]="'asset-risk-' + asset.id" />
               </div>
             </div>
           </div>
@@ -117,13 +95,13 @@
     </div>
 
     <div class="calculate-button">
-      <button type="submit" [disabled]="totalAllocation !== 100">Calculate Portfolio Performance</button>
+      <button type="submit" [disabled]="totalAllocation() !== 100">Calculate Portfolio Performance</button>
     </div>
   </form>
 
   <div class="results" *ngIf="portfolioResults">
     <h3>Diversified Portfolio Results</h3>
-    
+
     <table>
       <thead>
         <tr>
