@@ -1,3 +1,42 @@
 <app-header />
-<app-user-input/>
-<app-investment-results/>
+
+<div class="navigation">
+  <a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Basic Calculator</a>
+  <a [routerLink]="['/portfolio']" routerLinkActive="active">Portfolio Calculator</a>
+</div>
+
+<div class="content-container">
+  <router-outlet></router-outlet>
+</div>
+
+<style>
+  .navigation {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0 2rem;
+  }
+  
+  .navigation a {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: #555;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .navigation a:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .navigation a.active {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+</style>

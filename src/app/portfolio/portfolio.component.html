@@ -1,0 +1,169 @@
+<div class="container">
+  <h2>Portfolio Diversification Calculator</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="investment-inputs">
+      <div class="input-group">
+        <p>
+          <label for="initial-investment">Initial Investment</label>
+          <input
+            type="number"
+            name="initialInvestment"
+            id="initial-investment"
+            [(ngModel)]="enteredInitialValue"
+          />
+        </p>
+        <p>
+          <label for="annual-investment">Annual Investment</label>
+          <input type="number" id="annual-investment" name="annual-investment" [(ngModel)]="enteredAnnualInvestment"/>
+        </p>
+      </div>
+      <div class="input-group">
+        <p>
+          <label for="duration">Duration (years)</label>
+          <input type="number" id="duration" name="duration" [(ngModel)]="enteredDuration" />
+        </p>
+        <p>
+          <label for="rebalancing">Rebalancing (years, 0 = none)</label>
+          <input type="number" id="rebalancing" name="rebalancing" [(ngModel)]="enteredRebalancingFrequency" min="0" max="10" />
+        </p>
+      </div>
+    </div>
+
+    <div class="asset-allocation">
+      <div class="section-header">
+        <h3>Asset Allocation</h3>
+        <span class="total-allocation" [ngClass]="{'warning': totalAllocation !== 100}">
+          Total: {{totalAllocation}}% 
+          <span *ngIf="totalAllocation !== 100">(must be 100%)</span>
+        </span>
+      </div>
+
+      <div class="risk-meter">
+        <span>Portfolio Risk: {{portfolioRisk}}/10</span>
+        <div class="risk-bar">
+          <div class="risk-indicator" [style.width.%]="portfolioRisk * 10"></div>
+        </div>
+      </div>
+
+      <div class="asset-classes">
+        <div class="asset-class" *ngFor="let asset of assetClasses()">
+          <div class="asset-header">
+            <div class="asset-name">
+              <input type="text" [(ngModel)]="asset.name" [name]="'asset-name-' + asset.id" />
+              <button type="button" class="lock-button" (click)="toggleLock(asset.id)" [class.locked]="isLocked(asset.id)">
+                {{ isLocked(asset.id) ? '🔒' : '🔓' }}
+              </button>
+            </div>
+            <button type="button" class="remove-asset" (click)="removeAssetClass(asset.id)" *ngIf="assetClasses().length > 2">✕</button>
+          </div>
+
+          <div class="asset-details">
+            <div class="asset-slider">
+              <label>Allocation: {{asset.allocation}}%</label>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                step="1" 
+                [ngModel]="asset.allocation" 
+                (ngModelChange)="updateAllocation(asset.id, $event)" 
+                [name]="'asset-allocation-' + asset.id"
+                [disabled]="isLocked(asset.id)" 
+              />
+            </div>
+            
+            <div class="asset-properties">
+              <div class="asset-property">
+                <label>Expected Return: {{asset.expectedReturn}}%</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="15" 
+                  step="0.1" 
+                  [(ngModel)]="asset.expectedReturn" 
+                  [name]="'asset-return-' + asset.id" 
+                />
+              </div>
+              
+              <div class="asset-property">
+                <label>Risk Level: {{asset.risk}}/10</label>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="10" 
+                  step="0.1" 
+                  [(ngModel)]="asset.risk" 
+                  (ngModelChange)="updatePortfolioRisk()" 
+                  [name]="'asset-risk-' + asset.id" 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="asset-actions">
+        <button type="button" (click)="addAssetClass()">Add Asset Class</button>
+        <button type="button" (click)="resetToDefault()">Reset to Default</button>
+      </div>
+    </div>
+
+    <div class="comparison-toggle">
+      <label>
+        <input type="checkbox" [(ngModel)]="showComparison" name="show-comparison" />
+        Compare with standard investment
+      </label>
+    </div>
+
+    <div class="calculate-button">
+      <button type="submit" [disabled]="totalAllocation !== 100">Calculate Portfolio Performance</button>
+    </div>
+  </form>
+
+  <div class="results" *ngIf="portfolioResults">
+    <h3>Diversified Portfolio Results</h3>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Value</th>
+          <th>Interest</th>
+          <th>Total Invested</th>
+          <th>Asset Breakdown</th>
+          <th *ngIf="showComparison()">Comparison</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let result of portfolioResults">
+          <td>{{result.year}}</td>
+          <td>{{result.totalValue | currency}}</td>
+          <td>{{result.totalInterest | currency}}</td>
+          <td>{{result.totalAmountInvested | currency}}</td>
+          <td>
+            <div class="asset-breakdown">
+              <div *ngFor="let asset of result.assetValues" class="asset-value">
+                <span class="asset-label">{{asset.assetName}}:</span>
+                <span class="asset-amount">{{asset.value | currency}}</span>
+                <span class="asset-percent">({{asset.allocation.toFixed(1)}}%)</span>
+              </div>
+            </div>
+          </td>
+          <td *ngIf="showComparison() && comparisonResults">
+            <ng-container *ngFor="let comp of comparisonResults">
+              <div *ngIf="comp.year === result.year">
+                <div>Value: {{comp.valueEndOfYear | currency}}</div>
+                <div>Difference: {{result.totalValue - comp.valueEndOfYear | currency}}</div>
+              </div>
+            </ng-container>
+          </td>
+          <td>
+            <div *ngIf="result.rebalanced" class="rebalanced-indicator">Rebalanced</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

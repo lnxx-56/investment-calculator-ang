@@ -1,6 +1,28 @@
-# EssentialsPractice
+# Investment Calculator
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.0-next.2.
+
+## Features
+
+### Basic Investment Calculator
+
+A simple investment calculator that allows users to calculate the future value of investments based on:
+
+- Initial investment amount
+- Annual contribution
+- Expected return rate
+- Investment duration
+
+### Portfolio Diversification Calculator
+
+An advanced calculator that allows users to simulate diversified investment portfolios:
+
+- Allocate investments across multiple asset classes
+- Set unique returns and risk levels for each asset class
+- Simulate portfolio rebalancing
+- Compare diversified portfolio performance to standard investment strategy
+
+[View Portfolio Calculator Documentation](./src/app/portfolio/README.md)
 
 ## Development server
 
