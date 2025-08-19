@@ -29,7 +29,7 @@
     <div class="asset-allocation">
       <div class="section-header">
         <h3>Asset Allocation</h3>
-        <span class="total-allocation" [ngClass]="{'warning': totalAllocation() !== 100}">
+        <span class="total-allocation" [ngClass]="{'warning': totalAllocation !== 100}">
           Total: {{totalAllocation()}}%
           <span *ngIf="totalAllocation() !== 100">(must be 100%)</span>
         </span>
@@ -38,7 +38,7 @@
       <div class="risk-meter">
         <span>Portfolio Risk: {{portfolioRisk()}}/10</span>
         <div class="risk-bar">
-          <div class="risk-indicator" [style.width.%]="portfolioRisk() * 10"></div>
+          <div class="risk-indicator" [style.width.%]="portfolioRisk * 10"></div>
         </div>
       </div>
 
